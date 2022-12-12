@@ -118,22 +118,24 @@ public class PersistentAccountDAO implements AccountDAO {
     @Override
     public void removeAccount(String accountNo) throws InvalidAccountException {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String queryString = "DELETE FROM " + dbHelper.ACCOUNT_TABLE + " WHERE " + dbHelper.COL_ACCOUNT_NO + "=" + accountNo;
-        Cursor cursor = database.rawQuery(queryString, null);
+        String[] parameters = {accountNo};
+        String queryString = "DELETE FROM " + dbHelper.ACCOUNT_TABLE + " WHERE " + dbHelper.COL_ACCOUNT_NO + "= ?";
+        Cursor cursor = database.rawQuery(queryString, parameters);
         database.close();
     }
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        String queryString = "SELECT " + dbHelper.COL_BALANCE + " FROM " + dbHelper.ACCOUNT_TABLE + " WHERE " + dbHelper.COL_ACCOUNT_NO + " = " +  accountNo;
-        Cursor cursor = database.rawQuery(queryString,null);
+        String[] parameters = {accountNo};
+        String queryString = "SELECT " + dbHelper.COL_BALANCE + " FROM " + dbHelper.ACCOUNT_TABLE + " WHERE " + dbHelper.COL_ACCOUNT_NO + " = ?" ;
+        Cursor cursor = database.rawQuery(queryString,parameters);
 
         if (!cursor.moveToFirst()) {
             String msg = "Invalid account number";
             throw new InvalidAccountException(msg);
         }
-        cursor.close();
+
         double currentBalance = cursor.getDouble(cursor.getColumnIndex(dbHelper.COL_BALANCE));
 
         switch (expenseType){
@@ -148,7 +150,8 @@ public class PersistentAccountDAO implements AccountDAO {
 
         ContentValues cv = new ContentValues();
         cv.put(dbHelper.COL_BALANCE, currentBalance);
-        database.update(dbHelper.ACCOUNT_TABLE,cv, " WHERE "+ dbHelper.COL_ACCOUNT_NO + " = " + accountNo , null);
+        database.update(dbHelper.ACCOUNT_TABLE,cv, dbHelper.COL_ACCOUNT_NO + " = ?" , parameters);
+        cursor.close();
         database.close();
     }
 }

@@ -27,7 +27,13 @@ public class DbHelper extends SQLiteOpenHelper {
         String createAccountTable = "CREATE TABLE " + ACCOUNT_TABLE + "(" + COL_ACCOUNT_NO + " TEXT PRIMARY KEY, " + COL_BANK + " TEXT NOT NULL, " + COL_ACCOUNT_HOLDER + " TEXT NOT NULL, " + COL_BALANCE + " REAL NOT NULL )";
         db.execSQL(createAccountTable);
 
-        String createTransactionTable = "CREATE TABLE " + TRANSACTION_TABLE + " (" + COL_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COL_ACCOUNT_NO + "TEXT NOT NULL, " + COL_TYPE + " TEXT NOT NULL, " + COL_AMOUNT + " REAL NOT NULL, " + COL_DATE + " TEXT NOT NULL," + "FOREIGN KEY("+COL_ACCOUNT_NO + ")REFERENCES "+ACCOUNT_TABLE+"(" + COL_ACCOUNT_NO +"))";
+        String createTransactionTable = "CREATE TABLE " + TRANSACTION_TABLE + " (" +
+                COL_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COL_ACCOUNT_NO + " TEXT NOT NULL, " +
+                COL_TYPE + " TEXT NOT NULL, " +
+                COL_AMOUNT + " REAL NOT NULL, " +
+                COL_DATE + " TEXT NOT NULL," +
+                "FOREIGN KEY("+COL_ACCOUNT_NO + ")REFERENCES "+ACCOUNT_TABLE+"(" + COL_ACCOUNT_NO +"))";
         db.execSQL(createTransactionTable);
     }
 
